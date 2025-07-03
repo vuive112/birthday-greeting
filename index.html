@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Birthday Mom!</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top right, #ffe0e6, #fff);
+      overflow: hidden;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 50px;
+      margin-top: 20%;
+      color: #d6336c;
+      text-shadow: 2px 2px #fff;
+    }
+
+    .flower {
+      position: absolute;
+      top: -50px;
+      font-size: 30px;
+      pointer-events: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    #playMusic {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background-color: #d6336c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    #playMusic:hover {
+      background-color: #b52956;
+    }
+
+    #errorMessage {
+      display: none;
+      position: fixed;
+      top: 50px;
+      right: 10px;
+      padding: 10px;
+      background-color: #ffcccc;
+      color: #d6336c;
+      border: 1px solid #d6336c;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy Birthday, Mom!</h1>
+  <button id="playMusic">Phát Nhạc</button>
+  <div id="errorMessage"></div>
+  <audio id="birthdayMusic" loop>
+    <source src="https://upload.wikimedia.org/wikipedia/commons/d/de/Happy_birthday.ogg" type="audio/ogg">
+    <source src="https://cdn.pixabay.com/audio/2022/10/12/audio_5d3b6b3b5b.mp3" type="audio/mpeg">
+    Trình duyệt của bạn không hỗ trợ phát âm thanh.
+  </audio>
+
+  <script>
+    const icons = ['fa-birthday-cake', 'fa-gift', 'fa-glass-cheers', 'fa-star'];
+
+    function createFlower() {
+      const flower = document.createElement('span');
+      const iconClass = icons[Math.floor(Math.random() * icons.length)];
+      flower.classList.add('flower', 'fas', iconClass);
+      flower.style.left = Math.random() * (window.innerWidth - 30) + 'px';
+      flower.style.animationDuration = (3 + Math.random() * 5) + 's';
+      flower.style.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      document.body.appendChild(flower);
+      const removeTime = parseFloat(flower.style.animationDuration) * 1000 + 500;
+      setTimeout(() => flower.remove(), removeTime);
+    }
+
+    setInterval(createFlower, 200);
+
+    const playButton = document.getElementById('playMusic');
+    const audio = document.getElementById('birthdayMusic');
+    const errorMessage = document.getElementById('errorMessage');
+
+    playButton.addEventListener('click', function() {
+      if (audio) {
+        if (audio.paused) {
+          audio.play().then(() => {
+            errorMessage.style.display = 'none';
+            playButton.textContent = 'Tạm Dừng Nhạc';
+          }).catch((error) => {
+            console.error('Lỗi phát âm thanh:', error);
+            errorMessage.textContent = 'Không thể phát nhạc. Vui lòng kiểm tra kết nối hoặc trình duyệt.';
+            errorMessage.style.display = 'block';
+            setTimeout(() => { errorMessage.style.display = 'none'; }, 5000);
+          });
+        } else {
+          audio.pause();
+          playButton.textContent = 'Phát Nhạc';
+        }
+      } else {
+        console.error('Không tìm thấy phần tử audio.');
+        errorMessage.textContent = 'Không tìm thấy tệp âm thanh.';
+        errorMessage.style.display = 'block';
+        setTimeout(() => { errorMessage.style.display = 'none'; }, 5000);
+      }
+    });
+  </script>
+</body>
+</html>
